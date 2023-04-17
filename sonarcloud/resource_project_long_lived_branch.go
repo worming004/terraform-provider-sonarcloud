@@ -10,7 +10,7 @@ import (
 	"github.com/reinoudk/go-sonarcloud/sonarcloud/settings"
 )
 
-const LONGLIVEDBRANCHREGEX = "sonar.branch.longLivedBranch.regex"
+const LONGLIVEDBRANCHREGEX = "sonar.branch.longLivedBranches.regex"
 
 type resourceProjectLongLivedBranchType struct{}
 
@@ -119,8 +119,33 @@ func (r resourceProjectLongLivedBranch) Delete(ctx context.Context, req tfsdk.De
 }
 
 // Read implements tfsdk.Resource
-func (resourceProjectLongLivedBranch) Read(context.Context, tfsdk.ReadResourceRequest, *tfsdk.ReadResourceResponse) {
-	panic("unimplemented")
+func (r resourceProjectLongLivedBranch) Read(ctx context.Context, req tfsdk.ReadResourceRequest, resp *tfsdk.ReadResourceResponse) {
+	var state ProjectLongLivedBranch
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	request := settings.ValuesRequest{
+		Component: state.ProjectKey.Value,
+		Keys:      LONGLIVEDBRANCHREGEX,
+	}
+
+	result, err := r.p.client.Settings.Values(request)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Could not read settings",
+			fmt.Sprintf("The Get Value requrest returned an error %+v", err),
+		)
+		return
+	}
+
+	regexResult := result.Settings[0].Value
+	state.Value = types.String{Value: regexResult}
+
+	diags = resp.State.Set(ctx, state)
+	resp.Diagnostics.Append(diags...)
 }
 
 // Update implements tfsdk.Resource
