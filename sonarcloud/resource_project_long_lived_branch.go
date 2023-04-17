@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/reinoudk/go-sonarcloud/sonarcloud/settings"
 )
 
@@ -45,7 +45,7 @@ func (r resourceProjectLongLivedBranchType) GetSchema(_ context.Context) (tfsdk.
 	}, nil
 }
 
-func (r resourceProjectLongLivedBranchType) Create(ctx context.Context, p tfsdk.Provider) (tfsdk.Resource, diag.Diagnostics) {
+func (r resourceProjectLongLivedBranchType) NewResource(ctx context.Context, p tfsdk.Provider) (tfsdk.Resource, diag.Diagnostics) {
 	return resourceProjectLongLivedBranch{
 		p: *(p.(*provider)),
 	}, nil
