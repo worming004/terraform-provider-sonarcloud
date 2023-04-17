@@ -57,6 +57,12 @@ type ProjectMainBranch struct {
 	ProjectKey types.String `tfsdk:"project_key"`
 }
 
+type ProjectLongLivedBranch struct {
+	ID         types.String `tfsdk:"id"`
+	ProjectKey types.String `tfsdk:"project_key"`
+	Value      types.String `tfsdk:"value"`
+}
+
 type Condition struct {
 	Error  types.String  `tfsdk:"error"`
 	ID     types.Float64 `tfsdk:"id"`
